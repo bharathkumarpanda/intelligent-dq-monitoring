@@ -5,26 +5,23 @@ from hdbcli import dbapi
 from dq_engine import check_completeness, check_uniqueness, check_validity, check_consistency
 from ai_model import detect_anomalies
 
-# Page setup
 st.set_page_config(
     page_title="Intelligent DQ Monitoring System",
     page_icon="🔍",
     layout="wide"
 )
 
-# Title
 st.title("🔍 Intelligent Data Quality Monitoring System")
 st.subheader("SAP Business Data Cloud + AI")
 st.markdown("---")
 
-# Connect to SAP HANA Cloud
 @st.cache_data
 def load_from_hana():
     conn = dbapi.connect(
-        address="82ad1b10-39a6-462a-bf26-a0eb6609131b.hana.prod-ap21.hanacloud.ondemand.com",
-        port=443,
-        user="DBADMIN",
-        password="Dqmonitoring1!",
+        address=st.secrets["HANA_HOST"],
+        port=int(st.secrets["HANA_PORT"]),
+        user=st.secrets["HANA_USER"],
+        password=st.secrets["HANA_PASSWORD"],
         encrypt=True,
         sslValidateCertificate=False
     )
@@ -37,14 +34,11 @@ def load_from_hana():
     conn.close()
     return df
 
-# Load data from SAP HANA Cloud
 st.sidebar.success("✅ Connected to SAP HANA Cloud")
 df = load_from_hana()
 
-# Fix column names to match dq_engine expectations
 df.columns = [col.strip().replace("_", " ").title() for col in df.columns]
 
-# Convert numeric columns
 numeric_cols = ['Price', 'Availability', 'Stock Levels', 'Lead Times',
                 'Shipping Costs', 'Defect Rates', 'Revenue Generated',
                 'Number Of Products Sold', 'Order Quantities',
@@ -53,18 +47,15 @@ for col in numeric_cols:
     if col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
-# Get DQ Scores
 completeness = check_completeness(df)
 uniqueness = check_uniqueness(df)
 validity = check_validity(df)
 consistency = check_consistency(df)
 overall = round((completeness + uniqueness + validity + consistency) / 4, 2)
 
-# Run AI
 df = detect_anomalies(df)
 anomalies = df[df['anomaly'] == -1]
 
-# Row 1 - Key Metrics
 st.header("📊 Overall Data Quality Health")
 col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric("Overall Score", f"{overall}/100")
@@ -75,7 +66,6 @@ col5.metric("Consistency", f"{consistency}/100")
 
 st.markdown("---")
 
-# Row 2 - DQ Dimension Chart
 st.header("📈 DQ Dimension Analysis")
 dq_data = pd.DataFrame({
     'Dimension': ['Completeness', 'Uniqueness', 'Validity', 'Consistency'],
@@ -87,7 +77,6 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("---")
 
-# Row 3 - AI Anomaly Detection
 st.header("🤖 AI Anomaly Detection")
 col1, col2, col3 = st.columns(3)
 col1.metric("Total Records", len(df))
@@ -100,15 +89,12 @@ if len(anomalies) > 0:
 
 st.markdown("---")
 
-# Row 4 - Data Source Info
 st.header("🔗 Data Source")
 st.info("📡 Live data from SAP HANA Cloud | Instance: dq-monitoring-hana | Region: Singapore - Azure")
 
-# Row 5 - Full Dataset
 st.header("📋 Complete Dataset View")
 st.dataframe(df)
 
-# Sidebar
 st.sidebar.title("About")
 st.sidebar.info("""
 **Intelligent DQ Monitoring System**

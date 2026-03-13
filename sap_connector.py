@@ -4,7 +4,7 @@ conn = dbapi.connect(
     address="82ad1b10-39a6-462a-bf26-a0eb6609131b.hana.prod-ap21.hanacloud.ondemand.com",
     port=443,
     user="DBADMIN",
-    password="Dqmonitoring1!",
+    password="HIDDEN",
     encrypt=True,
     sslValidateCertificate=False
 )
