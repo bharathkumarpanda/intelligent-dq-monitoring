@@ -62,5 +62,7 @@ def generate_dq_report(df):
     print(f"OVERALL SCORE: {overall}/100")
     print("=" * 40)
 
-df = load_data()
-generate_dq_report(df)
+# Only runs when script is called directly, not when imported
+if __name__ == "__main__":
+    df = load_data()
+    generate_dq_report(df)
