@@ -109,4 +109,3 @@ if __name__ == "__main__":
     df = pd.read_csv("supply_chain_data.csv")
     df = detect_anomalies(df)
     show_results(df)
-
