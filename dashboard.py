@@ -25,6 +25,15 @@ st.info("""
 - 🛡️ Prevent operational losses from bad data decisions
 """)
 
+# ── BUSINESS PROBLEM ───────────────────────────────────────────────────────
+st.subheader("🏢 Business Problem")
+st.markdown("""
+In supply chain systems, inaccurate or inconsistent data can lead to **inventory mismatches, 
+stock shortages, overstocking, and delays in logistics operations**. Organizations using SAP 
+need a reliable way to continuously monitor data quality and detect anomalies before they 
+impact business decisions and operational efficiency.
+""")
+
 st.markdown("---")
 
 @st.cache_data
@@ -134,6 +143,15 @@ if len(anomalies) > 0:
         }),
         use_container_width=True
     )
+
+# ── RECOMMENDED ACTION ─────────────────────────────────────────────────────
+st.subheader("✅ Recommended Action")
+st.markdown("""
+- **Review flagged SKUs** before processing inventory or logistics operations
+- **Validate stock quantities** and pricing entries for anomalous records
+- **Investigate high defect rate** items to prevent quality issues in supply chain
+- **Ensure data consistency** before using records for business reporting or planning
+""")
 
 st.markdown("---")
 
